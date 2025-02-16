@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Výpočet cesta na pizzu</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; padding: 20px; }
+        input, output { font-size: 1.2em; }
+        .container { max-width: 400px; margin: auto; text-align: left; }
+        .result { font-weight: bold; margin-top: 10px; }
+    </style>
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js')
+                .then(() => console.log('Service Worker registrovaný'))
+                .catch(err => console.log('Chyba:', err));
+        }
+
+        function calculate() {
+            let pizzas = document.getElementById("pizzas").value;
+            let weight = document.getElementById("weight").value;
+            let hydration = document.getElementById("hydration").value / 100;
+
+			// Oprava: aktualizácia čísla vedľa posuvátka
+			document.getElementById("pizzasValue").innerText = pizzas;
+		
+            let totalDough = pizzas * weight;
+            let flour = totalDough / (1 + hydration + 0.03 + 0.03); // Múka
+            let water = flour * hydration; // Voda
+            let oil = flour * 0.03; // Olej
+            let salt = flour * 0.03; // Soľ
+            let yeast = (flour / 500) * 0.5; // Droždie (1/2 kocky na 500g múky)
+
+            document.getElementById("flour").innerText = flour.toFixed(1) + " g";
+            document.getElementById("water").innerText = water.toFixed(1) + " g";
+            document.getElementById("oil").innerText = oil.toFixed(1) + " g";
+            document.getElementById("salt").innerText = salt.toFixed(1) + " g";
+            document.getElementById("yeast").innerText = yeast.toFixed(1) + " g";
+        }
+    </script>
+</head>
+<body onload="calculate()">
+    <h1>Výpočet cesta na pizzu</h1>
+    <div class="container">
+        <label>Počet pízz:</label>
+        <input type="range" id="pizzas" min="1" max="10" value="1" oninput="calculate()">
+        <output id="pizzasValue">1</output>
+        <br>
+
+        <label>Hmotnosť jednej pizze (g):</label>
+        <input type="number" id="weight" value="300" oninput="calculate()">
+        <br>
+
+        <label>Hydratácia (%):</label>
+        <input type="number" id="hydration" value="62.5" oninput="calculate()">
+        <br>
+
+        <h2>Výsledok:</h2>
+        <div class="result">Múka: <span id="flour"></span></div>
+        <div class="result">Voda: <span id="water"></span></div>
+        <div class="result">Olej: <span id="oil"></span></div>
+        <div class="result">Soľ: <span id="salt"></span></div>
+        <div class="result">Droždie: <span id="yeast"></span></div>
+
+        <h2>Postup:</h2>
+        <ul>
+            <li><b>Omáčka:</b> pomodoro + pizza korenie (odstáť 10 minút)</li>
+            <li><b>Na potretie okrajov:</b> 3PL olivový olej + 2-3 strúčiky cesnaku + soľ + oregano (odstáť 10 minút, vyjde na 2 pizze)</li>
+            <li>Omáčka, šunka, cibuľa, šampiňóny, kukurica, syr</li>
+            <li>Potrieť okraje (aj po vytiahnutí z pece)</li>
+        </ul>
+    </div>
+</body>
+</html>
