@@ -18,27 +18,35 @@
                 .catch(err => console.log('Chyba:', err));
         }
 
-        function calculate() {
-            let pizzas = document.getElementById("pizzas").value;
-            let weight = document.getElementById("weight").value;
-            let hydration = document.getElementById("hydration").value / 100;
+	function calculate() {
+    		let pizzas = document.getElementById("pizzas").value;
+    		let weight = document.getElementById("weight").value;
+    		let hydration = document.getElementById("hydration").value / 100;
 
-			// Oprava: aktualizácia čísla vedľa posuvátka
-			document.getElementById("pizzasValue").innerText = pizzas;
-		
-            let totalDough = pizzas * weight;
-            let flour = totalDough / (1 + hydration + 0.03 + 0.03); // Múka
-            let water = flour * hydration; // Voda
-            let oil = flour * 0.03; // Olej
-            let salt = flour * 0.03; // Soľ
-            let yeast = (flour / 500) * 0.5; // Droždie (1/2 kocky na 500g múky)
+    		// Oprava: aktualizácia čísla vedľa posuvátka
+    		document.getElementById("pizzasValue").innerText = pizzas;
+    
+    		let totalDough = pizzas * weight;
+    		let flour = totalDough / (1 + hydration + 0.03 + 0.03); // Múka
+    		let water = flour * hydration; // Voda
+    		let oil = flour * 0.03; // Olej
+    		let salt = flour * 0.03; // Soľ
 
-            document.getElementById("flour").innerText = flour.toFixed(1) + " g";
-            document.getElementById("water").innerText = water.toFixed(1) + " g";
-            document.getElementById("oil").innerText = oil.toFixed(1) + " g";
-            document.getElementById("salt").innerText = salt.toFixed(1) + " g";
-            document.getElementById("yeast").innerText = yeast.toFixed(1) + " g";
-        }
+    		// Úprava výpočtu droždia
+    		let yeast;
+    		if (flour < 1000) {
+        		yeast = 0.5; // 1/2 kocky na menej než 1000g múky
+    		} else {
+        		yeast = 1; // Celá kocka na 1000g a viac múky
+    		}
+
+    document.getElementById("flour").innerText = flour.toFixed(1) + " g";
+    document.getElementById("water").innerText = water.toFixed(1) + " g";
+    document.getElementById("oil").innerText = oil.toFixed(1) + " g";
+    document.getElementById("salt").innerText = salt.toFixed(1) + " g";
+    document.getElementById("yeast").innerText = yeast.toFixed(1) + " g";
+}
+
     </script>
 </head>
 <body onload="calculate()">
