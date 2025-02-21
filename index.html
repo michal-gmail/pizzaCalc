@@ -32,6 +32,7 @@
     navigator.serviceWorker.addEventListener('message', (event) => {
         if (event.data.version) {
             document.getElementById('version-display').textContent = 'Verzia: ' + event.data.version;
+            console.log(event.data.version);
         }
 
         if (event.data.action === 'refresh') {
