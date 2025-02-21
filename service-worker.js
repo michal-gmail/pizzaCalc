@@ -1,4 +1,4 @@
-const VERSION = 'v3';
+const VERSION = 'v4'; // 🔄 Zmena verzie
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -19,13 +19,17 @@ self.addEventListener("fetch", (event) => {
       fetch(event.request)
         .then((response) => {
           if (!response || response.status !== 200 || response.type !== 'basic') {
-            return response; // Ak je odpoveď neplatná, vráť ju rovno
+            return response;
           }
-          let responseClone = response.clone(); // Klonujeme odpoveď
+          let responseClone = response.clone();
           caches.open(VERSION).then((cache) => {
             cache.put(event.request, responseClone);
           });
-          return response; // Teraz je bezpečné vrátiť originál
+
+          // 🆕 Hneď po `fetch` pošli verziu klientovi
+          sendVersionToClients();
+
+          return response;
         })
         .catch(() => caches.match(event.request))
     );
@@ -50,12 +54,16 @@ self.addEventListener("activate", (event) => {
     })
   );
 
-  // Poslanie verzie klientom po aktivácii
   self.clients.claim().then(() => {
-    self.clients.matchAll().then(clients => {
-      clients.forEach(client => {
-        client.postMessage({ version: VERSION });
-      });
-    });
+    sendVersionToClients();
   });
 });
+
+// 🆕 Funkcia na odoslanie verzie všetkým klientom
+function sendVersionToClients() {
+  self.clients.matchAll().then(clients => {
+    clients.forEach(client => {
+      client.postMessage({ version: VERSION });
+    });
+  });
+}
