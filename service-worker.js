@@ -2,7 +2,7 @@ const VERSION = 'v3';
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
+    caches.open(VERSION).then((cache) => {
       return cache.addAll([
         "icon-192.png",
         "icon-512.png",
@@ -22,7 +22,7 @@ self.addEventListener("fetch", (event) => {
             return response; // Ak je odpoveď neplatná, vráť ju rovno
           }
           let responseClone = response.clone(); // Klonujeme odpoveď
-          caches.open(CACHE_NAME).then((cache) => {
+          caches.open(VERSION).then((cache) => {
             cache.put(event.request, responseClone);
           });
           return response; // Teraz je bezpečné vrátiť originál
@@ -45,7 +45,7 @@ self.addEventListener("activate", (event) => {
     caches.keys().then((cacheNames) => {
       return Promise.all(
         cacheNames
-          .filter((cacheName) => cacheName !== CACHE_NAME)
+          .filter((cacheName) => cacheName !== VERSION)
           .map((cacheName) => caches.delete(cacheName))
       );
     })
