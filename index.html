@@ -14,6 +14,22 @@
     <script>
 
     if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js')
+            .then(reg => console.log('Service Worker registrovaný!', reg))
+            .catch(err => console.error('Chyba registrácie SW:', err));
+
+        navigator.serviceWorker.addEventListener('message', (event) => {
+            if (event.data.version) {
+                console.log('Doručená verzia SW:', event.data.version); // Debug log
+                document.getElementById('version-display').textContent = 'Verzia: ' + event.data.version;
+            }
+            if (event.data.action === 'refresh') {
+            window.location.reload();
+        }
+        });
+    }
+
+    if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('service-worker.js').then((registration) => {
             
             // 🆕 Listener na detekciu aktualizácie
@@ -27,18 +43,6 @@
             });
         });
     }
-
-    // 📢 Jediný listener na prijímanie správ od SW
-    navigator.serviceWorker.addEventListener('message', (event) => {
-        if (event.data.version) {
-            document.getElementById('version-display').textContent = 'Verzia: ' + event.data.version;
-            console.log(event.data.version);
-        }
-
-        if (event.data.action === 'refresh') {
-            window.location.reload();
-        }
-    });
 
 	function calculate() {
     		let pizzas = document.getElementById("pizzas").value;
