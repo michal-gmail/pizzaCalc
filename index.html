@@ -25,18 +25,15 @@
                     }
                 });
             });
-
-            // 📢 Listener na prijímanie správ od service worker-a
-            navigator.serviceWorker.addEventListener('message', (event) => {
-                if (event.data.version) {
-                    document.getElementById('version-display').textContent = 'Verzia: ' + event.data.version;
-                }
-            });
         });
     }
 
-
+    // 📢 Jediný listener na prijímanie správ od SW
     navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data.version) {
+            document.getElementById('version-display').textContent = 'Verzia: ' + event.data.version;
+        }
+
         if (event.data.action === 'refresh') {
             window.location.reload();
         }
