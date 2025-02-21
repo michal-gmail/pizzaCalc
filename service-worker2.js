@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pizzaCalc-app-v2'; // Zmeň číslo verzie
+const CACHE_NAME = 'pizzaCalc-app-v3'; // Zmeň číslo verzie
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
