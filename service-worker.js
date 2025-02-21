@@ -38,8 +38,7 @@ self.addEventListener("fetch", (event) => {
   }
 });
 
-
-// 🗑️ Vymažte starú cache pri aktivácii novej verzie
+// 🗑️ Vymazanie starej cache a oznámenie klientom
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -50,21 +49,13 @@ self.addEventListener("activate", (event) => {
       );
     })
   );
-  self.clients.claim(); // Aktualizuje klientov okamžite
-});
 
-// Odošlite verziu do klienta
-self.clients.matchAll().then(clients => {
-  clients.forEach(client => {
-      client.postMessage({ version: VERSION });
+  // Poslanie verzie klientom po aktivácii
+  self.clients.claim().then(() => {
+    self.clients.matchAll().then(clients => {
+      clients.forEach(client => {
+        client.postMessage({ version: VERSION });
+      });
+    });
   });
 });
-
-// Odošlite správu klientom na obnovenie stránky
-// clients.claim().then(() => {
-//   return clients.matchAll().then(clients => {
-//       clients.forEach(client => {
-//           client.postMessage({ action: 'refresh' });
-//       });
-//   });
-// });
