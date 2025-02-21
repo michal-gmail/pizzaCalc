@@ -1,3 +1,5 @@
+const CACHE_NAME = 'pizzaCalc-app-v2'; // Zmeň číslo verzie
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open("pwa-cache").then((cache) => {
@@ -20,4 +22,15 @@ self.addEventListener("fetch", (event) => {
       return response || fetch(event.request);
     })
   );
+});
+
+self.addEventListener('activate', event => {
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.filter(cacheName => cacheName !== CACHE_NAME)
+                    .map(cacheName => caches.delete(cacheName))
+            );
+        })
+    );
 });
