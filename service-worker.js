@@ -15,14 +15,17 @@ self.addEventListener("install", (event) => {
 
 self.addEventListener("fetch", (event) => {
   if (event.request.mode === "navigate") {
-    // Pre `index.html` vždy skúste stiahnuť novú verziu
     event.respondWith(
       fetch(event.request)
         .then((response) => {
-          return caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, response.clone());
-            return response;
+          if (!response || response.status !== 200 || response.type !== 'basic') {
+            return response; // Ak je odpoveď neplatná, vráť ju rovno
+          }
+          let responseClone = response.clone(); // Klonujeme odpoveď
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
           });
+          return response; // Teraz je bezpečné vrátiť originál
         })
         .catch(() => caches.match(event.request))
     );
@@ -34,6 +37,7 @@ self.addEventListener("fetch", (event) => {
     );
   }
 });
+
 
 // 🗑️ Vymažte starú cache pri aktivácii novej verzie
 self.addEventListener("activate", (event) => {
