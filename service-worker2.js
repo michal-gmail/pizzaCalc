@@ -2,7 +2,7 @@ const CACHE_NAME = 'pizzaCalc-app-v2'; // Zmeň číslo verzie
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
-    caches.open("pwa-cache2").then((cache) => {
+    caches.open("pwa-cache3").then((cache) => {
       return cache.addAll([
         "index.html",
         "icon-192.png",
