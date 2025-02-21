@@ -4,13 +4,10 @@ self.addEventListener("install", (event) => {
   event.waitUntil(
     caches.open("pwa-cache2").then((cache) => {
       return cache.addAll([
-        "/",
-        "/index.html",
-        "/icon-192.png",
-        "/icon-512.png",
-        "/manifest.json",
-        "/style.css",
-        "/script.js"
+        "index.html",
+        "icon-192.png",
+        "icon-512.png",
+        "manifest.json",
       ]);
     })
   );
