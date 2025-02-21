@@ -12,11 +12,35 @@
         .result { font-weight: bold; margin-top: 10px; }
     </style>
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('service-worker2.js')
-                .then(() => console.log('Service Worker registrovaný'))
-                .catch(err => console.log('Chyba:', err));
+
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/service-worker.js').then((registration) => {
+            
+            // 🆕 Listener na detekciu aktualizácie
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'activated') {
+                        window.location.reload(); // 🔄 Obnoví stránku pri aktualizácii SW
+                    }
+                });
+            });
+
+            // 📢 Listener na prijímanie správ od service worker-a
+            navigator.serviceWorker.addEventListener('message', (event) => {
+                if (event.data.version) {
+                    document.getElementById('version-display').textContent = 'Verzia: ' + event.data.version;
+                }
+            });
+        });
+    }
+
+
+    navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data.action === 'refresh') {
+            window.location.reload();
         }
+    });
 
 	function calculate() {
     		let pizzas = document.getElementById("pizzas").value;
@@ -51,6 +75,7 @@
 </head>
 <body onload="calculate()">
     <h1>Výpočet cesta na pizzu</h1>
+    <div id="version-display">Verzia: </div>
     <div class="container">
         <label>Počet pízz:</label>
         <input type="range" id="pizzas" min="1" max="10" value="1" oninput="calculate()">
